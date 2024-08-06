@@ -3,13 +3,14 @@ import EmptyState from "@/components/EmptyState";
 import ListingCard from "@/components/Listing/ListingCard";
 import getCurrentUser from "@/lib/actions/getCurrentUser";
 import getListings, { IListingsParams } from "@/lib/actions/getListings";
+import { safeListing } from "@/types";
 
 interface HomeProps {
   searchParams: IListingsParams;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const listing = await getListings(searchParams);
+  const listing: safeListing[] = await getListings(searchParams);
   const currentUser = await getCurrentUser();
 
   if (listing.length === 0) {

@@ -3,6 +3,7 @@ import React from "react";
 import getCurrentUser from "@/lib/actions/getCurrentUser";
 import getReservation from "@/lib/actions/getReservations";
 import ReservationsClient from "./ReservationsClient";
+import { Suspense } from "react";
 
 type Props = {};
 

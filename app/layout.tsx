@@ -11,6 +11,7 @@ import ToastContainerBar from "@/components/ToastContainerBar";
 import RentModal from "@/components/Modals/RentModal";
 
 import Footer from "@/components/Footer";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Airbnb",
