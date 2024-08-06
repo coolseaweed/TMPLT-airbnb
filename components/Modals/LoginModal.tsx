@@ -2,22 +2,24 @@
 
 import useLoginModel from "@/hook/useLoginModal";
 import useRegisterModal from "@/hook/useRegisterModal";
-import axios from "axios";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { AiFillFacebook } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "react-toastify";
 
-import { signIn } from "next-auth/react";
 import Button from "../Button";
 import Heading from "../Heading";
 import Input from "../Inputs/Input";
 import Modal from "./Modal";
+import "react-toastify/dist/ReactToastify.min.css";
 
 type Props = {};
 
-function RegisterModal({}: Props) {
+function LoginModal({}: Props) {
+  const router = useRouter();
   const registerModel = useRegisterModal();
   const loginModel = useLoginModel();
   const [isLoading, setIsLoading] = useState(false);
@@ -28,52 +30,41 @@ function RegisterModal({}: Props) {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: "",
       email: "",
       password: "",
     },
   });
-
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
+    console.log(data);
+    signIn("credentials", {
+      ...data,
+      redirect: false,
+    }).then((callback) => {
+      setIsLoading(false);
 
-    axios
-      .post("/api/register", data)
-      .then(() => {
-        toast.success("Success!");
-        loginModel.onOpen();
-        registerModel.onClose();
-      })
-      .catch((err: any) => toast.error("Something Went Wrong"))
-      .finally(() => {
-        setIsLoading(false);
-        toast.success("Register Successfully");
-      });
+      if (callback?.ok) {
+        console.log("Logged In");
+        toast.success("Login Successfully");
+        router.refresh();
+        loginModel.onClose();
+      } else if (callback?.error) {
+        toast.error("Something Went Wrong");
+      }
+    });
   };
 
   const toggle = useCallback(() => {
-    loginModel.onOpen();
-    registerModel.onClose();
+    loginModel.onClose();
+    registerModel.onOpen();
   }, [loginModel, registerModel]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading
-        title="Welcome to Airbnb-Clone"
-        subtitle="Create an Account!"
-        center
-      />
+      <Heading title="Welcome Back" subtitle="Login to your Account!" center />
       <Input
         id="email"
         label="Email Address"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-      />
-      <Input
-        id="name"
-        label="User Name"
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -99,34 +90,33 @@ function RegisterModal({}: Props) {
         icon={FcGoogle}
         onClick={() => signIn("google")}
       />
-      <Button
+      {/* <Button
         outline
         label="Continue with Facebook"
         icon={AiFillFacebook}
         onClick={() => signIn("facebook")}
         isColor
-      />
+      /> */}
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div>
-          Already have an account?{" "}
+          {`Didn't have an Account?`}{" "}
           <span
             onClick={toggle}
             className="text-neutral-800 cursor-pointer hover:underline"
           >
-            Log in
+            Create an Account
           </span>
         </div>
       </div>
     </div>
   );
-
   return (
     <Modal
       disabled={isLoading}
-      isOpen={registerModel.isOpen}
-      title="Register"
+      isOpen={loginModel.isOpen}
+      title="Login"
       actionLabel="Continue"
-      onClose={registerModel.onClose}
+      onClose={loginModel.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
@@ -134,4 +124,4 @@ function RegisterModal({}: Props) {
   );
 }
 
-export default RegisterModal;
+export default LoginModal;
