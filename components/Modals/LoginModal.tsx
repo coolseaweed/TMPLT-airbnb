@@ -36,7 +36,6 @@ function LoginModal({}: Props) {
   });
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
-    console.log(data);
     signIn("credentials", {
       ...data,
       redirect: false,
@@ -44,7 +43,6 @@ function LoginModal({}: Props) {
       setIsLoading(false);
 
       if (callback?.ok) {
-        console.log("Logged In");
         toast.success("Login Successfully");
         router.refresh();
         loginModel.onClose();

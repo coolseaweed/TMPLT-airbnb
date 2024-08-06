@@ -18,7 +18,6 @@ type Props = {
 };
 
 function UserMenu({ currentUser }: Props) {
-  console.log(`currentUser in UserMenu:`, currentUser);
   const router = useRouter();
   const registerModel = useRegisterModal();
   const loginModel = useLoginModel();
