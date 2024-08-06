@@ -6,6 +6,12 @@ import RegisterModal from "@/components/Modals/RegisterModal";
 import ToasterProvider from "@/components/Providers/ToasterProvider";
 import LoginModal from "@/components/Modals/LoginModal";
 import getCurrentUser from "@/lib/actions/getCurrentUser";
+import SearchModal from "@/components/Modals/SearchModal";
+import ToastContainerBar from "@/components/ToastContainerBar";
+import RentModal from "@/components/Modals/RentModal";
+
+import Footer from "@/components/Footer";
+
 export const metadata: Metadata = {
   title: "Airbnb",
   description: "Airbnb Clone",
@@ -23,12 +29,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
-        <ToasterProvider />
+        <ToastContainerBar />
+        <SearchModal />
         <RegisterModal />
         <LoginModal />
+        <RentModal />
         <Navbar currentUser={currentUser} />
 
-        {children}
+        <div className="pb-20 pt-28">{children}</div>
+        <Footer />
       </body>
     </html>
   );
